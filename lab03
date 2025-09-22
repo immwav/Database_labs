@@ -1,0 +1,26 @@
+almazbekrysbekov@MacBook-Air-Almazbek ~ %  psql -h localhost -p 5432 -U almazbekrysbekov -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE DATABASE university;
+CREATE DATABASE
+postgres=# \c university 
+You are now connected to database "university" as user "almazbekrysbekov".
+university=# \l
+                                         List of databases
+    Name    |      Owner       | Encoding | Collate | Ctype |           Access privileges           
+------------+------------------+----------+---------+-------+---------------------------------------
+ postgres   | almazbekrysbekov | UTF8     | C       | C     | 
+ template0  | almazbekrysbekov | UTF8     | C       | C     | =c/almazbekrysbekov                  +
+            |                  |          |         |       | almazbekrysbekov=CTc/almazbekrysbekov
+ template1  | almazbekrysbekov | UTF8     | C       | C     | =c/almazbekrysbekov                  +
+            |                  |          |         |       | almazbekrysbekov=CTc/almazbekrysbekov
+ university | almazbekrysbekov | UTF8     | C       | C     | 
+(4 rows)
+
+university=# \c postgres
+You are now connected to database "postgres" as user "almazbekrysbekov".
+postgres=# DROP DATABASE university;
+DROP DATABASE
+postgres=# \q
+almazbekrysbekov@MacBook-Air-Almazbek ~ % 
