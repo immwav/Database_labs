@@ -1,0 +1,59 @@
+almazbekrysbekov@MacBook-Air-Almazbek ~ % psql -h localhost -p 5432 -U almazbekrysbekov -d postgres  
+
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                         List of databases
+   Name    |      Owner       | Encoding | Collate | Ctype |           Access privileges           
+-----------+------------------+----------+---------+-------+---------------------------------------
+ postgres  | almazbekrysbekov | UTF8     | C       | C     | 
+ template0 | almazbekrysbekov | UTF8     | C       | C     | =c/almazbekrysbekov                  +
+           |                  |          |         |       | almazbekrysbekov=CTc/almazbekrysbekov
+ template1 | almazbekrysbekov | UTF8     | C       | C     | =c/almazbekrysbekov                  +
+           |                  |          |         |       | almazbekrysbekov=CTc/almazbekrysbekov
+(3 rows)
+
+postgres=# CREATE TABLE students (
+postgres(# id SERIAL PRIMARY KEY,
+postgres(# name VARCHAR(100),
+postgres(# age int
+postgres(# );
+CREATE TABLE
+postgres=# \d 
+                   List of relations
+ Schema |      Name       |   Type   |      Owner       
+--------+-----------------+----------+------------------
+ public | students        | table    | almazbekrysbekov
+ public | students_id_seq | sequence | almazbekrysbekov
+(2 rows)
+
+postgres=# \d students
+                                    Table "public.students"
+ Column |          Type          | Collation | Nullable |               Default                
+--------+------------------------+-----------+----------+--------------------------------------
+ id     | integer                |           | not null | nextval('students_id_seq'::regclass)
+ name   | character varying(100) |           |          | 
+ age    | integer                |           |          | 
+Indexes:
+    "students_pkey" PRIMARY KEY, btree (id)
+
+postgres=# INSERT INTO students (name, age) VALUES ('Alice', 21), ('Bob', 23);
+INSERT 0 2
+
+postgres=# SELECT * FROM students;
+ id | name  | age 
+----+-------+-----
+  1 | Alice |  21
+  2 | Bob   |  23
+(2 rows)
+
+postgres=# DROP TABLE students;
+DROP TABLE
+postgres=# \q
+almazbekrysbekov@MacBook-Air-Almazbek ~ % 
+
+
+
+
+
