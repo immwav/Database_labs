@@ -1,0 +1,55 @@
+almazbekrysbekov@MacBook-Air-Almazbek ~ % psql -h localhost -p 5432 -U almazbekrysbekov -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    faculty VARCHAR(100)
+);
+CREATE TABLE
+postgres=# INSERT INTO students (name, email, faculty) VALUES
+('Iman', 'iman@example.com','Chemist'),
+('Daniel', 'daniel@example.com', 'Medical'),
+('Altynbek', 'altynbek@example.com', 'Engineering');
+INSERT 0 3
+postgres=# SELECT * FROM students;
+ id |   name   |        email         |   faculty   
+----+----------+----------------------+-------------
+  1 | Iman     | iman@example.com     | Chemist
+  2 | Daniel   | daniel@example.com   | Medical
+  3 | Altynbek | altynbek@example.com | Engineering
+(3 rows)
+
+postgres=# SELECT name, email FROM students;
+   name   |        email         
+----------+----------------------
+ Iman     | iman@example.com
+ Daniel   | daniel@example.com
+ Altynbek | altynbek@example.com
+(3 rows)
+
+postgres=# SELECT id, faculty FROM students;
+ id |   faculty   
+----+-------------
+  1 | Chemist
+  2 | Medical
+  3 | Engineering
+(3 rows)
+
+postgres=# SELECT name, email FROM students WHERE name = 'Iman';
+ name |      email       
+------+------------------
+ Iman | iman@example.com
+(1 row)
+
+postgres=# SELECT name, email FROM students LIMIT 2;
+  name  |       email        
+--------+--------------------
+ Iman   | iman@example.com
+ Daniel | daniel@example.com
+(2 rows)
+
+postgres=# \q
+almazbekrysbekov@MacBook-Air-Almazbek ~ % 
