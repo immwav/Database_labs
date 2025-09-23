@@ -1,0 +1,83 @@
+almazbekrysbekov@MacBook-Air-Almazbek ~ %  psql -h localhost -p 5432 -U almazbekrysbekov -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE TABLE students (students_id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, faculty VARCHAR(100));
+ERROR:  relation "students" already exists
+postgres=# DROP TABLE IF EXISTS students;
+DROP TABLE
+postgres=# CREATE TABLE students (student_id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL);
+CREATE TABLE
+postgres=# ALTER TABLE students
+postgres-# ADD COLUMN date_of_birth DATE;
+ALTER TABLE
+postgres=# SELECT * FROM students;
+ student_id | first_name | date_of_birth 
+------------+------------+---------------
+(0 rows)
+
+postgres=# ALTER TABLE students
+postgres-# DROP COLUMN first_name;
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# ADD COLUMN first_name VARCHAR(50) NOT NULL;
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# ALTER COLUMN first_name TYPE TEXT;
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# ADD COLUMN unique_student_email VARCHAR(100);
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# ADD CONSTRAINT unique_student_email UNIQUE (email);
+ERROR:  column "email" named in key does not exist
+postgres=# ALTER TABLE
+postgres-# ALTER TABLE students
+postgres-# ADD COLUMN email VARCHAR(100);
+ERROR:  syntax error at or near "TABLE"
+LINE 2: ALTER TABLE students
+              ^
+postgres=# ALTER TABLE students
+postgres-# ADD COLUMN email VARCHAR(100);
+ALTER TABLE
+postgres=# ALTER TABLE
+postgres-# ADD CONSTRAINT unique_student_email UNIQUE (email);
+ERROR:  syntax error at or near "CONSTRAINT"
+LINE 2: ADD CONSTRAINT unique_student_email UNIQUE (email);
+            ^
+postgres=# ALTER TABLE students
+postgres-# ADD CONSTRAINT unique_student_email UNIQUE (email);
+ALTER TABLE
+postgres=# SELECT * FROM students;
+ student_id | date_of_birth | first_name | unique_student_email | email 
+------------+---------------+------------+----------------------+-------
+(0 rows)
+
+postgres=# ALTER TABLE students
+postgres-# RENAME COLUMN email TO email_address;
+ALTER TABLE
+postgres=# SELECT * FROM students;
+ student_id | date_of_birth | first_name | unique_student_email | email_address 
+------------+---------------+------------+----------------------+---------------
+(0 rows)
+
+postgres=#  ALTER TABEL students
+postgres-# RENAME TO university_students
+postgres-# RENAME TO university_students;
+ERROR:  syntax error at or near "TABEL"
+LINE 1: ALTER TABEL students
+              ^
+postgres=# ALTER TABLE students
+postgres-# RENAME TO university_students;
+ALTER TABLE
+postgres=# SELECT * FROM university_students;
+ student_id | date_of_birth | first_name | unique_student_email | email_address 
+------------+---------------+------------+----------------------+---------------
+(0 rows)
+
+postgres=# DROP TABLE IF EXISTS university_students;
+DROP TABLE
+postgres=# CREATE TEMP TABLE temp_table_name (student_id SERIAL PRIMARY KEY);
+CREATE TABLE
+postgres=# \q
+almazbekrysbekov@MacBook-Air-Almazbek ~ % 
