@@ -1,0 +1,87 @@
+almazbekrysbekov@MacBook-Air-Almazbek ~ %  psql -h localhost -p 5432 -U almazbekrysbekov -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INT,
+    department_id INT
+);
+CREATE TABLE
+postgres=# CREATE TABLE departments (
+    department_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+CREATE TABLE
+postgres=# CREATE TABLE course_enrollments (
+    student_id INTEGER NOT NULL,
+    course_id INTEGER NOT NULL,
+    semester VARCHAR(20) NOT NULL,
+    enrollment_date DATE DEFAULT CURRENT_DATE,
+    grade CHAR(2),
+    PRIMARY KEY (student_id, course_id, semester)
+);
+CREATE TABLE
+postgres=# CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100)
+);
+CREATE TABLE
+postgres=# CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT NOT NULL,
+    amount DECIMAL(10,2),
+    order_date DATE DEFAULT CURRENT_DATE
+);
+CREATE TABLE
+postgres=# CREATE TABLE students_bad (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100),
+    reason TEXT
+);
+CREATE TABLE
+postgres=# \dt
+                   List of relations
+ Schema |        Name        | Type  |      Owner       
+--------+--------------------+-------+------------------
+ public | course_enrollments | table | almazbekrysbekov
+ public | customers          | table | almazbekrysbekov
+ public | departments        | table | almazbekrysbekov
+ public | orders             | table | almazbekrysbekov
+ public | students           | table | almazbekrysbekov
+ public | students_bad       | table | almazbekrysbekov
+(6 rows)
+
+postgres=# \d
+                          List of relations
+ Schema |             Name              |   Type   |      Owner       
+--------+-------------------------------+----------+------------------
+ public | course_enrollments            | table    | almazbekrysbekov
+ public | customers                     | table    | almazbekrysbekov
+ public | customers_customer_id_seq     | sequence | almazbekrysbekov
+ public | departments                   | table    | almazbekrysbekov
+ public | departments_department_id_seq | sequence | almazbekrysbekov
+ public | orders                        | table    | almazbekrysbekov
+ public | orders_order_id_seq           | sequence | almazbekrysbekov
+ public | students                      | table    | almazbekrysbekov
+ public | students_bad                  | table    | almazbekrysbekov
+ public | students_bad_id_seq           | sequence | almazbekrysbekov
+ public | students_student_id_seq       | sequence | almazbekrysbekov
+(11 rows)
+
+postgres=# \d course_enrollments
+                       Table "public.course_enrollments"
+     Column      |         Type          | Collation | Nullable |   Default    
+-----------------+-----------------------+-----------+----------+--------------
+ student_id      | integer               |           | not null | 
+ course_id       | integer               |           | not null | 
+ semester        | character varying(20) |           | not null | 
+ enrollment_date | date                  |           |          | CURRENT_DATE
+ grade           | character(2)          |           |          | 
+Indexes:
+    "course_enrollments_pkey" PRIMARY KEY, btree (student_id, course_id, semester)
+
+postgres-# \q
+almazbekrysbekov@MacBook-Air-Almazbek ~ % 
