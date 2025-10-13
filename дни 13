@@ -1,0 +1,336 @@
+postgres=# CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    department VARCHAR(50),
+    department_id INT,
+    salary NUMERIC(10,2),
+    age INT,
+    hire_date DATE,
+    bonus NUMERIC(10,2),
+    experience_years INT,
+    email VARCHAR(100)
+);
+CREATE TABLE
+postgres=# CREATE TABLE sales_data (
+    sale_id SERIAL PRIMARY KEY,
+    employee_id INT,
+    department VARCHAR(50),
+    sales_amount NUMERIC(10,2),
+    sale_date DATE
+);
+CREATE TABLE
+postgres=# CREATE TABLE employee_skills (
+    employee_skill_id SERIAL PRIMARY KEY,
+    employee_id INT,
+    skill_name VARCHAR(50)
+);
+CREATE TABLE
+postgres=# CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(50),
+    category VARCHAR(50),
+    price NUMERIC(10,2)
+);
+CREATE TABLE
+postgres=# CREATE TABLE product_reviews (
+    review_id SERIAL PRIMARY KEY,
+    product_id INT,
+    rating NUMERIC(2,1)
+);
+CREATE TABLE
+postgres=# INSERT INTO employees (first_name, last_name, department, department_id, salary, age, hire_date, bonus, experience_years, email) VALUES
+('Alice', 'A', 'Engineering', 3, 95000, 34, '2023-01-10', 3000, 10, 'alice@example.com'),
+('Bob', 'B', 'Engineering', 3, 120000, 36, '2022-05-20', 5000, 12, 'bob@example.com'),
+('Charlie', 'C', 'Sales', 5, 70000, 32, '2024-07-01', 2000, 8, 'charlie@example.com'),
+('Diana', 'D', 'Sales', 5, 50000, 40, '2023-08-15', NULL, 5, 'diana@example.com'),
+('Evan', 'E', 'HR', 7, 60000, 33, '2024-03-18', 4000, 6, 'evan@example.com'),
+('Frank', 'F', 'Engineering', 3, 80000, 34, '2021-09-12', NULL, 7, 'frank@example.com'),
+('Grace', 'G', 'Marketing', 8, 55000, 36, '2021-05-22', 3500, 5, 'grace@example.com'),
+('Hannah', 'H', 'Marketing', 8, 62000, 37, '2022-11-11', NULL, 6, 'hannah@example.com'),
+('Ian', 'I', 'Sales', 5, 90000, 35, '2020-03-05', NULL, 10, 'ian@example.com'),
+('Julia', 'J', 'HR', 7, 58000, 32, '2022-01-25', 3000, 4, 'julia@example.com');
+INSERT 0 10
+postgres=# (1,'Engineering', 15000,'2024-01-05'),
+(2,'Engineering', 23000,'2024-02-10'),
+(3,'Sales', 5000,'2024-03-01'),
+(4,'Sales', 7000,'2024-04-01'),
+(5,'HR', 8000,'2024-05-01'),
+(6,'Engineering', 0,'2024-06-01'),
+(7,'Marketing', 12000,'2024-01-15');
+ERROR:  syntax error at or near "1"
+LINE 1: (1,'Engineering', 15000,'2024-01-05'),
+         ^
+postgres=# INSERT INTO employee_skills (employee_id, skill_name) VALUES
+(1, 'Python'), (1, 'SQL'),
+(2, 'C++'), (2, 'Leadership'),
+(3, 'CRM'), (3, 'Negotiation'),
+(4, 'Salesforce'),
+(5, 'Recruitment'),
+(6, 'DevOps'), (6, 'Docker'),
+(7, 'Copywriting'),
+(8, 'SEO'),
+(9, 'Strategy'),
+(10, 'Onboarding');
+INSERT 0 14
+postgres=# INSERT INTO products (product_name, category, price) VALUES
+('Strawberry','Tropical',25),
+('Blueberry','Tropical',40),
+('Mango','Tropical',12),
+('Apple','Fruit',30),
+('Banana','Fruit',25),
+('Orange','Fruit',32),
+('Pineapple','Fruit',28),
+('Grapes','Fruit',38);
+INSERT 0 8
+postgres=# INSERT INTO product_reviews (product_id, rating) VALUES
+(1,4.5),(1,5),(1,4.2),(1,4.8),(1,4.1),(1,4.0),(1,5),(1,4.7),(1,4.9),(1,4.6),
+(2,3.5),(2,4),(2,5),(2,4.1),(2,4.3),(2,3.9),(2,4.5),(2,4.7),(2,4.9),(2,4.2);
+INSERT 0 20
+postgres=# SELECT SUM(salary) AS total_salaries FROM employees;
+ total_salaries 
+----------------
+      740000.00
+(1 row)
+
+postgres=# SELECT department, SUM(sales_amount) AS total_sales
+FROM sales_data
+GROUP BY department;
+ department | total_sales 
+------------+-------------
+(0 rows)
+
+postgres=# SELECT AVG(salary) AS average_salary FROM employees;
+   average_salary   
+--------------------
+ 74000.000000000000
+(1 row)
+
+postgres=# SELECT department, AVG(age) AS avg_age
+FROM employees
+GROUP BY department;
+ department  |       avg_age       
+-------------+---------------------
+ Marketing   | 36.5000000000000000
+ Engineering | 34.6666666666666667
+ Sales       | 35.6666666666666667
+ HR          | 32.5000000000000000
+(4 rows)
+
+postgres=# SELECT MAX(salary) AS highest_salary, MIN(salary) AS lowest_salary FROM employees;
+ highest_salary | lowest_salary 
+----------------+---------------
+      120000.00 |      50000.00
+(1 row)
+
+postgres=# SELECT department, MAX(hire_date) AS latest_hire
+FROM employees
+GROUP BY department;
+ department  | latest_hire 
+-------------+-------------
+ Marketing   | 2022-11-11
+ Engineering | 2023-01-10
+ Sales       | 2024-07-01
+ HR          | 2024-03-18
+(4 rows)
+
+postgres=# SELECT department, STRING_AGG(first_name, ', ') AS employee_names
+FROM employees
+GROUP BY department;
+ department  |   employee_names    
+-------------+---------------------
+ Marketing   | Grace, Hannah
+ Engineering | Alice, Bob, Frank
+ Sales       | Charlie, Diana, Ian
+ HR          | Evan, Julia
+(4 rows)
+
+postgres=# SELECT employee_id, STRING_AGG(skill_name, ', ' ORDER BY skill_name) AS skills
+FROM employee_skills
+GROUP BY employee_id;
+ employee_id |      skills      
+-------------+------------------
+           1 | Python, SQL
+           2 | C++, Leadership
+           3 | CRM, Negotiation
+           4 | Salesforce
+           5 | Recruitment
+           6 | DevOps, Docker
+           7 | Copywriting
+           8 | SEO
+           9 | Strategy
+          10 | Onboarding
+(10 rows)
+
+postgres=# SELECT department, ARRAY_AGG(salary) AS salary_array
+FROM employees
+GROUP BY department;
+ department  |         salary_array          
+-------------+-------------------------------
+ Marketing   | {55000.00,62000.00}
+ Engineering | {95000.00,120000.00,80000.00}
+ Sales       | {70000.00,50000.00,90000.00}
+ HR          | {60000.00,58000.00}
+(4 rows)
+
+postgres=# SELECT department, ARRAY_AGG(first_name ORDER BY last_name) AS employees
+FROM employees
+GROUP BY department;
+ department  |      employees      
+-------------+---------------------
+ Engineering | {Alice,Bob,Frank}
+ HR          | {Evan,Julia}
+ Marketing   | {Grace,Hannah}
+ Sales       | {Charlie,Diana,Ian}
+(4 rows)
+
+postgres=# SELECT department, STDDEV(salary) AS salary_std_dev, VARIANCE(salary) AS salary_variance
+FROM employees
+GROUP BY department;
+ department  |  salary_std_dev   |    salary_variance    
+-------------+-------------------+-----------------------
+ Marketing   | 4949.747468305833 | 24500000.000000000000
+ Engineering |    20207.25942164 |    408333333.33333333
+ Sales       |    20000.00000000 |    400000000.00000000
+ HR          | 1414.213562373095 |  2000000.000000000000
+(4 rows)
+
+postgres=# SELECT CORR(experience_years, salary) AS experience_salary_correlation FROM employees;
+ experience_salary_correlation 
+-------------------------------
+            0.9510053850587432
+(1 row)
+
+postgres=# SELECT category, COUNT(*) AS number_of_products,
+       SUM(price) AS total_value, AVG(price) AS average_price
+FROM products
+GROUP BY category;
+ category | number_of_products | total_value |    average_price    
+----------+--------------------+-------------+---------------------
+ Tropical |                  3 |       77.00 | 25.6666666666666667
+ Fruit    |                  5 |      153.00 | 30.6000000000000000
+(2 rows)
+
+postgres=# SELECT EXTRACT(YEAR FROM sale_date) AS year,
+       EXTRACT(QUARTER FROM sale_date) AS quarter,
+       COUNT(*) AS total_sales,
+       SUM(sales_amount) AS total_revenue
+FROM sales_data
+GROUP BY year, quarter
+ORDER BY year, quarter;
+ year | quarter | total_sales | total_revenue 
+------+---------+-------------+---------------
+(0 rows)
+
+postgres=# SELECT CASE
+         WHEN age < 30 THEN 'Under 30'
+         WHEN age BETWEEN 30 AND 50 THEN '30-50'
+         ELSE 'Over 50'
+       END AS age_group,
+       COUNT(*) AS employee_count,
+       AVG(salary) AS avg_salary
+FROM employees
+GROUP BY age_group;
+ age_group | employee_count |     avg_salary     
+-----------+----------------+--------------------
+ 30-50     |             10 | 74000.000000000000
+(1 row)
+
+postgres=# SELECT SUM(bonus) AS total_bonus, AVG(bonus) AS avg_bonus, COUNT(bonus) AS employees_with_bonus
+FROM employees;
+ total_bonus |       avg_bonus       | employees_with_bonus 
+-------------+-----------------------+----------------------
+    20500.00 | 3416.6666666666666667 |                    6
+(1 row)
+
+postgres=# SELECT department, COUNT(*) AS employee_count,
+       MIN(salary) AS min_salary,
+       MAX(salary) AS max_salary,
+       AVG(salary) AS avg_salary,
+       STDDEV(salary) AS salary_std_dev
+FROM employees
+GROUP BY department
+ORDER BY avg_salary DESC;
+ department  | employee_count | min_salary | max_salary |     avg_salary     |  salary_std_dev   
+-------------+----------------+------------+------------+--------------------+-------------------
+ Engineering |              3 |   80000.00 |  120000.00 | 98333.333333333333 |    20207.25942164
+ Sales       |              3 |   50000.00 |   90000.00 | 70000.000000000000 |    20000.00000000
+ HR          |              2 |   58000.00 |   60000.00 | 59000.000000000000 | 1414.213562373095
+ Marketing   |              2 |   55000.00 |   62000.00 | 58500.000000000000 | 4949.747468305833
+(4 rows)
+
+...skipping...
+ department  | employee_count | min_salary | max_salary |     avg_salary     |  salary_std_dev   
+-------------+----------------+------------+------------+--------------------+-------------------
+ Engineering |              3 |   80000.00 |  120000.00 | 98333.333333333333 |    20207.25942164
+ Sales       |              3 |   50000.00 |   90000.00 | 70000.000000000000 |    20000.00000000
+ HR          |              2 |   58000.00 |   60000.00 | 59000.000000000000 | 1414.213562373095
+ Marketing   |              2 |   55000.00 |   62000.00 | 58500.000000000000 | 4949.747468305833
+(4 rows)
+
+~
+~
+~
+~
+~
+~
+~
+~
+~
+zsh:1: no matches found: COUNT(*)
+...skipping...
+ department  | employee_count | min_salary | max_salary |     avg_salary     |  salary_std_dev   
+-------------+----------------+------------+------------+--------------------+-------------------
+ Engineering |              3 |   80000.00 |  120000.00 | 98333.333333333333 |    20207.25942164
+ Sales       |              3 |   50000.00 |   90000.00 | 70000.000000000000 |    20000.00000000
+ HR          |              2 |   58000.00 |   60000.00 | 59000.000000000000 | 1414.213562373095
+ Marketing   |              2 |   55000.00 |   62000.00 | 58500.000000000000 | 4949.747468305833
+(4 rows)
+
+~
+~
+~
+~
+~
+~
+~
+~
+~
+postgres=#  COUNT(*)::FLOAT / (SELECT COUNT(*) FROM employees) * 100 AS percentage
+postgres-# FROM employees
+postgres-# GROUP BY department
+postgres-# ORDER BY percentage DESC;
+ERROR:  syntax error at or near "COUNT"
+LINE 1: COUNT(*)::FLOAT / (SELECT COUNT(*) FROM employees) * 100 AS ...
+        ^
+postgres=# 
+postgres=# SELECT department, COUNT(*) AS employee_count,
+       MIN(salary) AS min_salary,
+       MAX(salary) AS max_salary,
+       AVG(salary) AS avg_salary,
+       STDDEV(salary) AS salary_std_dev
+FROM employees
+GROUP BY department
+ORDER BY avg_salary DESC;
+ department  | employee_count | min_salary | max_salary |     avg_salary     |  salary_std_dev   
+-------------+----------------+------------+------------+--------------------+-------------------
+ Engineering |              3 |   80000.00 |  120000.00 | 98333.333333333333 |    20207.25942164
+ Sales       |              3 |   50000.00 |   90000.00 | 70000.000000000000 |    20000.00000000
+ HR          |              2 |   58000.00 |   60000.00 | 59000.000000000000 | 1414.213562373095
+ Marketing   |              2 |   55000.00 |   62000.00 | 58500.000000000000 | 4949.747468305833
+(4 rows)
+
+postgres=# SELECT department, COUNT(*) AS dept_count,
+       COUNT(*)::FLOAT / (SELECT COUNT(*) FROM employees) * 100 AS percentage
+FROM employees
+GROUP BY department
+ORDER BY percentage DESC;
+ department  | dept_count | percentage 
+-------------+------------+------------
+ Engineering |          3 |         30
+ Sales       |          3 |         30
+ Marketing   |          2 |         20
+ HR          |          2 |         20
+(4 rows)
+
+postgres=# 
