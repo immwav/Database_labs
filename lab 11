@@ -97,4 +97,39 @@ SELECT * FROM employee_skills;
   5 | Eve     | eve@gmail.com     | Sales       |  80000.00 |  27 | 2022-07-20 |                4
 (5 rows)
 
-(END)
+ id |   product_name   |  category   |  price  
+----+------------------+-------------+---------
+  1 | Blueberry Muffin | Bakery      |    3.50
+  2 | Strawberry Jam   | Grocery     |    5.00
+  3 | Chocolate Bar    | Grocery     |    2.00
+  4 | Laptop           | Electronics | 1200.00
+  5 | Mouse            | Electronics |   25.00
+(5 rows)
+
+ id | customer_name |       email       
+----+---------------+-------------------
+  1 | Brandon Smith | brandon@gmail.com
+  2 | Alice Johnson | alicej@yahoo.com
+  3 | Bob Brown     | bobb@gmail.com
+(3 rows)
+
+ id | employee_id | product_id | sale_date  | amount  
+----+-------------+------------+------------+---------
+  1 |           1 |          4 | 2023-01-10 | 1200.00
+  2 |           2 |          5 | 2023-01-12 |   25.00
+  3 |           3 |          4 | 2023-02-05 | 2400.00
+  4 |           2 |          3 | 2023-03-01 |   10.00
+  5 |           5 |          2 | 2023-03-15 |    5.00
+(5 rows)
+
+ id | employee_id | skill_name 
+----+-------------+------------
+  1 |           1 | Python
+  2 |           1 | SQL
+  3 |           2 | Salesforce
+  4 |           3 | Java
+  5 |           3 | Management
+  6 |           4 | Marketing
+  7 |           5 | Excel
+(7 rows)
+
