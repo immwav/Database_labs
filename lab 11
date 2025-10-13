@@ -1,0 +1,100 @@
+DROP TABLE
+postgres=# CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    department VARCHAR(50),
+    salary NUMERIC(10,2),
+    age INT,
+    hire_date DATE,
+    experience_years INT
+);
+CREATE TABLE
+postgres=# INSERT INTO employees (name, email, department, salary, age, hire_date, experience_years) VALUES
+('Alice', 'alice@gmail.com', 'Engineering', 90000, 28, '2020-06-01', 3),
+('Bob', 'bob@gmail.com', 'Sales', 75000, 35, '2021-03-15', 5),
+('Charlie', 'charlie@gmail.com', 'Engineering', 120000, 45, '2018-09-10', 10),
+('David', 'david@gmail.com', 'Marketing', 60000, 30, '2023-01-05', 2),
+('Eve', 'eve@gmail.com', 'Sales', 80000, 27, '2022-07-20', 4);
+INSERT 0 5
+postgres=# CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100),
+    category VARCHAR(50),
+    price NUMERIC(10,2)
+);
+CREATE TABLE
+postgres=# INSERT INTO products (product_name, category, price) VALUES
+('Blueberry Muffin', 'Bakery', 3.5),
+('Strawberry Jam', 'Grocery', 5.0),
+('Chocolate Bar', 'Grocery', 2.0),
+('Laptop', 'Electronics', 1200.0),
+('Mouse', 'Electronics', 25.0);
+INSERT 0 5
+postgres=# CREATE TABLE customers (
+    id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(100),
+    email VARCHAR(100)
+);
+CREATE TABLE
+postgres=# INSERT INTO customers (customer_name, email) VALUES
+('Brandon Smith', 'brandon@gmail.com'),
+('Alice Johnson', 'alicej@yahoo.com'),
+('Bob Brown', 'bobb@gmail.com');
+INSERT 0 3
+postgres=# CREATE TABLE sales (
+    id SERIAL PRIMARY KEY,
+    employee_id INT REFERENCES employees(id),
+    product_id INT REFERENCES products(id),
+    sale_date DATE,
+    amount NUMERIC(10,2)
+);
+CREATE TABLE
+postgres=# INSERT INTO sales (employee_id, product_id, sale_date, amount) VALUES 
+(1, 4, '2023-01-10', 1200.00),
+(2, 5, '2023-01-12', 25.00),
+(3, 4, '2023-02-05', 2400.00),
+(2, 3, '2023-03-01', 10.00),
+(5, 2, '2023-03-15', 5.00);
+INSERT 0 5
+postgres=# CREATE TABLE employee_skills (
+    id SERIAL PRIMARY KEY,
+    employee_id INT REFERENCES employees(id),
+    skill_name VARCHAR(50)
+);
+CREATE TABLE
+postgres=# INSERT INTO employee_skills (employee_id, skill_name) VALUES
+(1, 'Python'),
+(1, 'SQL'),
+(2, 'Salesforce'),
+(3, 'Java'),
+(3, 'Management'),
+(4, 'Marketing'),
+(5, 'Excel');
+INSERT 0 7
+postgres=# \dt
+                  List of relations
+ Schema |      Name       | Type  |      Owner       
+--------+-----------------+-------+------------------
+ public | customers       | table | almazbekrysbekov
+ public | employee_skills | table | almazbekrysbekov
+ public | employees       | table | almazbekrysbekov
+ public | products        | table | almazbekrysbekov
+ public | sales           | table | almazbekrysbekov
+(5 rows)
+
+postgres=# SELECT * FROM employees;
+SELECT * FROM products;
+SELECT * FROM customers;
+SELECT * FROM sales;
+SELECT * FROM employee_skills;
+ id |  name   |       email       | department  |  salary   | age | hire_date  | experience_years 
+----+---------+-------------------+-------------+-----------+-----+------------+------------------
+  1 | Alice   | alice@gmail.com   | Engineering |  90000.00 |  28 | 2020-06-01 |                3
+  2 | Bob     | bob@gmail.com     | Sales       |  75000.00 |  35 | 2021-03-15 |                5
+  3 | Charlie | charlie@gmail.com | Engineering | 120000.00 |  45 | 2018-09-10 |               10
+  4 | David   | david@gmail.com   | Marketing   |  60000.00 |  30 | 2023-01-05 |                2
+  5 | Eve     | eve@gmail.com     | Sales       |  80000.00 |  27 | 2022-07-20 |                4
+(5 rows)
+
+(END)
