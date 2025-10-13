@@ -1,0 +1,117 @@
+postgres=# CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    department VARCHAR(50),
+    department_id INT,
+    salary NUMERIC(10,2)
+);
+
+INSERT INTO employees (name, department, department_id, salary) VALUES
+('Alice', 'Engineering', 3, 95000.00),
+('Bob', 'Engineering', 3, 120000.00),
+('Charlie', 'Sales', 5, 70000.00),
+('Diana', 'Sales', 5, 50000.00),
+('Evan', 'HR', 7, 60000.00),
+('Frank', 'Engineering', 3, 80000.00),
+('Grace', 'Marketing', 8, 55000.00);
+CREATE TABLE
+INSERT 0 7
+postgres=# SELECT * FROM employees;
+ id |  name   | department  | department_id |  salary   
+----+---------+-------------+---------------+-----------
+  1 | Alice   | Engineering |             3 |  95000.00
+  2 | Bob     | Engineering |             3 | 120000.00
+  3 | Charlie | Sales       |             5 |  70000.00
+  4 | Diana   | Sales       |             5 |  50000.00
+  5 | Evan    | HR          |             7 |  60000.00
+  6 | Frank   | Engineering |             3 |  80000.00
+  7 | Grace   | Marketing   |             8 |  55000.00
+(7 rows)
+
+postgres=# SELECT name, department FROM employees;
+  name   | department  
+---------+-------------
+ Alice   | Engineering
+ Bob     | Engineering
+ Charlie | Sales
+ Diana   | Sales
+ Evan    | HR
+ Frank   | Engineering
+ Grace   | Marketing
+(7 rows)
+
+postgres=# SELECT name, salary, salary * 0.10 AS potential_bonus
+FROM employees;
+  name   |  salary   | potential_bonus 
+---------+-----------+-----------------
+ Alice   |  95000.00 |       9500.0000
+ Bob     | 120000.00 |      12000.0000
+ Charlie |  70000.00 |       7000.0000
+ Diana   |  50000.00 |       5000.0000
+ Evan    |  60000.00 |       6000.0000
+ Frank   |  80000.00 |       8000.0000
+ Grace   |  55000.00 |       5500.0000
+(7 rows)
+
+postgres=# SELECT name, salary
+FROM employees
+WHERE department = 'Sales';
+  name   |  salary  
+---------+----------
+ Charlie | 70000.00
+ Diana   | 50000.00
+(2 rows)
+
+postgres=# SELECT name
+FROM employees
+WHERE salary > 75000 AND department = 'Engineering';
+ name  
+-------
+ Alice
+ Bob
+ Frank
+(3 rows)
+
+postgres=# SELECT name
+FROM employees
+WHERE name ~ '^[AB]';
+ name  
+-------
+ Alice
+ Bob
+(2 rows)
+
+postgres=# SELECT name, salary,
+  CASE
+    WHEN salary > 100000 THEN 'Senior'
+    WHEN salary BETWEEN 60000 AND 100000 THEN 'Mid-Level'
+    ELSE 'Junior'
+  END AS employee_level
+FROM employees;
+  name   |  salary   | employee_level 
+---------+-----------+----------------
+ Alice   |  95000.00 | Mid-Level
+ Bob     | 120000.00 | Senior
+ Charlie |  70000.00 | Mid-Level
+ Diana   |  50000.00 | Junior
+ Evan    |  60000.00 | Mid-Level
+ Frank   |  80000.00 | Mid-Level
+ Grace   |  55000.00 | Junior
+(7 rows)
+
+postgres=# WITH department_averages AS (
+  SELECT department, AVG(salary) AS avg_salary
+  FROM employees
+  GROUP BY department
+)
+SELECT e.name, e.salary, e.department, da.avg_salary
+FROM employees e
+JOIN department_averages da ON e.department = da.department
+WHERE e.salary > da.avg_salary;
+  name   |  salary   | department  |     avg_salary     
+---------+-----------+-------------+--------------------
+ Bob     | 120000.00 | Engineering | 98333.333333333333
+ Charlie |  70000.00 | Sales       | 60000.000000000000
+(2 rows)
+
+postgres=# 
