@@ -1,0 +1,373 @@
+DROP TABLE
+postgres=# CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+CREATE TABLE
+postgres=# CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+ERROR:  relation "customers" already exists
+postgres=# CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(customer_id),
+    order_date DATE,
+    total_amount NUMERIC(10,2)
+);
+CREATE TABLE
+postgres=# CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100),
+    price NUMERIC(10,2)
+);
+CREATE TABLE
+postgres=# CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100),
+    price NUMERIC(10,2)
+);
+ERROR:  relation "products" already exists
+postgres=# CREATE TABLE order_items (
+    order_item_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id),
+    product_id INT REFERENCES products(product_id),
+    quantity INT
+);
+CREATE TABLE
+postgres=# CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    manager_id INT REFERENCES employees(employee_id)
+);
+CREATE TABLE
+postgres=# CREATE TABLE user_profiles (
+    user_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    phone VARCHAR(20)
+);
+CREATE TABLE
+postgres=# CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50)
+);
+CREATE TABLE
+postgres=# CREATE TABLE authors (
+    author_id SERIAL PRIMARY KEY,
+    author_name VARCHAR(100)
+);
+CREATE TABLE
+postgres=# CREATE TABLE books (
+    book_id SERIAL PRIMARY KEY,
+    title VARCHAR(200),
+    publication_year INT,
+    author_id INT REFERENCES authors(author_id)
+);
+CREATE TABLE
+postgres=# CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    student_name VARCHAR(100)
+);
+CREATE TABLE
+postgres=# CREATE TABLE courses (
+    course_id SERIAL PRIMARY KEY,
+    course_name VARCHAR(100)
+);
+CREATE TABLE
+postgres=# CREATE TABLE enrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    student_id INT REFERENCES students(student_id),
+    course_id INT REFERENCES courses(course_id),
+    enrollment_date DATE,
+    grade NUMERIC(5,2)
+);
+CREATE TABLE
+postgres=# INSERT INTO customers(name, email) VALUES
+('Alice Anderson', 'alice@example.com'),
+('Bob Brown', 'bob@example.com'),
+('Charlie Clark', 'charlie@example.com'),
+('Diana Davis', 'diana@example.com');
+INSERT 0 4
+postgres=# INSERT INTO orders(customer_id, order_date, total_amount) VALUES
+(1, '2025-01-10', 150.75),
+(1, '2025-01-15', 50.25),
+(2, '2025-01-12', 200.00),
+(3, '2025-01-20', 320.50),
+(4, '2025-02-01', 450.00);
+INSERT 0 5
+postgres=# INSERT INTO products(product_name, price) VALUES
+('Laptop', 1200.00),
+('Phone', 800.00),
+('Tablet', 400.00),
+('Headphones', 150.00);
+INSERT 0 4
+postgres=# INSERT INTO order_items(order_id, product_id, quantity) VALUES
+(1, 1, 1),
+(1, 4, 2),
+(2, 2, 1),
+(3, 3, 3),
+(4, 1, 1),
+(4, 2, 2),
+(5, 4, 5);
+INSERT 0 7
+postgres=# INSERT INTO employees(name, manager_id) VALUES
+('Alice Anderson', NULL),
+('Bob Brown', 1),
+('Charlie Clark', NULL),
+('Diana Davis', 3);
+INSERT 0 4
+postgres=# INSERT INTO users(username) VALUES
+('alice_user'),
+('bob_user');
+INSERT 0 2
+postgres=# INSERT INTO user_profiles(user_id, first_name, last_name, phone) VALUES
+(1, 'Alice', 'Anderson', '123-456-7890'),
+(2, 'Bob', 'Brown', '234-567-8901');
+INSERT 0 2
+postgres=# INSERT INTO authors(author_name) VALUES
+('George R.R. Martin'),
+('J.K. Rowling');
+INSERT 0 2
+postgres=# INSERT INTO books(title, publication_year, author_id) VALUES
+('A Game of Thrones', 1996, 1),
+('A Clash of Kings', 1998, 1),
+('Harry Potter and the Sorcerer''s Stone', 1997, 2),
+('Harry Potter and the Chamber of Secrets', 1998, 2);
+INSERT 0 4
+postgres=# INSERT INTO students(student_name) VALUES
+('Alice Student'),
+('Bob Student');
+
+INSERT INTO courses(course_name) VALUES
+('Math 101'),
+('History 202');
+INSERT 0 2
+INSERT 0 2
+postgres=# INSERT INTO enrollments(student_id, course_id, enrollment_date, grade) VALUES
+(1, 1, '2025-01-10', 95.0),
+(2, 1, '2025-01-15', 88.0),
+(2, 2, '2025-01-20', 92.0);
+INSERT 0 3
+postgres=# SELECT c.name, c.email, o.order_date, o.total_amount
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id;
+      name      |        email        | order_date | total_amount 
+----------------+---------------------+------------+--------------
+ Alice Anderson | alice@example.com   | 2025-01-10 |       150.75
+ Alice Anderson | alice@example.com   | 2025-01-15 |        50.25
+ Bob Brown      | bob@example.com     | 2025-01-12 |       200.00
+ Charlie Clark  | charlie@example.com | 2025-01-20 |       320.50
+ Diana Davis    | diana@example.com   | 2025-02-01 |       450.00
+(5 rows)
+
+postgres=# SELECT c.name, c.email, o.order_date, o.total_amount
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id;
+      name      |        email        | order_date | total_amount 
+----------------+---------------------+------------+--------------
+ Alice Anderson | alice@example.com   | 2025-01-10 |       150.75
+ Alice Anderson | alice@example.com   | 2025-01-15 |        50.25
+ Bob Brown      | bob@example.com     | 2025-01-12 |       200.00
+ Charlie Clark  | charlie@example.com | 2025-01-20 |       320.50
+ Diana Davis    | diana@example.com   | 2025-02-01 |       450.00
+(5 rows)
+
+postgres=# SELECT c.name, c.email, o.order_date, o.total_amount
+FROM customers c
+RIGHT JOIN orders o ON c.customer_id = o.customer_id;
+      name      |        email        | order_date | total_amount 
+----------------+---------------------+------------+--------------
+ Alice Anderson | alice@example.com   | 2025-01-10 |       150.75
+ Alice Anderson | alice@example.com   | 2025-01-15 |        50.25
+ Bob Brown      | bob@example.com     | 2025-01-12 |       200.00
+ Charlie Clark  | charlie@example.com | 2025-01-20 |       320.50
+ Diana Davis    | diana@example.com   | 2025-02-01 |       450.00
+(5 rows)
+
+postgres=# SELECT c.name, c.email, o.order_date, o.total_amount
+FROM customers c
+FULL OUTER JOIN orders o ON c.customer_id = o.customer_id;
+      name      |        email        | order_date | total_amount 
+----------------+---------------------+------------+--------------
+ Alice Anderson | alice@example.com   | 2025-01-10 |       150.75
+ Alice Anderson | alice@example.com   | 2025-01-15 |        50.25
+ Bob Brown      | bob@example.com     | 2025-01-12 |       200.00
+ Charlie Clark  | charlie@example.com | 2025-01-20 |       320.50
+ Diana Davis    | diana@example.com   | 2025-02-01 |       450.00
+(5 rows)
+
+postgres=# SELECT c.name, p.product_name
+FROM customers c
+CROSS JOIN products p;
+      name      | product_name 
+----------------+--------------
+ Alice Anderson | Laptop
+ Bob Brown      | Laptop
+ Charlie Clark  | Laptop
+ Diana Davis    | Laptop
+ Alice Anderson | Phone
+ Bob Brown      | Phone
+ Charlie Clark  | Phone
+ Diana Davis    | Phone
+ Alice Anderson | Tablet
+ Bob Brown      | Tablet
+ Charlie Clark  | Tablet
+ Diana Davis    | Tablet
+ Alice Anderson | Headphones
+ Bob Brown      | Headphones
+ Charlie Clark  | Headphones
+ Diana Davis    | Headphones
+(16 rows)
+
+postgres=# SELECT c.name, o.order_date, oi.quantity, p.product_name, p.price
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+INNER JOIN order_items oi ON o.order_id = oi.order_id
+INNER JOIN products p ON oi.product_id = p.product_id;
+
+SELECT e1.name AS employee, e2.name AS manager
+FROM employees e1
+LEFT JOIN employees e2 ON e1.manager_id = e2.employee_id;
+      name      | order_date | quantity | product_name |  price  
+----------------+------------+----------+--------------+---------
+ Alice Anderson | 2025-01-10 |        1 | Laptop       | 1200.00
+ Alice Anderson | 2025-01-10 |        2 | Headphones   |  150.00
+ Alice Anderson | 2025-01-15 |        1 | Phone        |  800.00
+ Bob Brown      | 2025-01-12 |        3 | Tablet       |  400.00
+ Charlie Clark  | 2025-01-20 |        1 | Laptop       | 1200.00
+ Charlie Clark  | 2025-01-20 |        2 | Phone        |  800.00
+ Diana Davis    | 2025-02-01 |        5 | Headphones   |  150.00
+(7 rows)
+
+    employee    |    manager     
+----------------+----------------
+ Alice Anderson | 
+ Bob Brown      | Alice Anderson
+ Charlie Clark  | 
+ Diana Davis    | Charlie Clark
+(4 rows)
+
+postgres=# SELECT c.name, o.order_date, o.total_amount
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date >= '2024-01-01'
+  AND o.total_amount > 100;
+      name      | order_date | total_amount 
+----------------+------------+--------------
+ Alice Anderson | 2025-01-10 |       150.75
+ Bob Brown      | 2025-01-12 |       200.00
+ Charlie Clark  | 2025-01-20 |       320.50
+ Diana Davis    | 2025-02-01 |       450.00
+(4 rows)
+
+postgres=# SELECT u.username, up.first_name, up.last_name, up.phone
+FROM users u
+LEFT JOIN user_profiles up ON u.user_id = up.user_id;
+  username  | first_name | last_name |    phone     
+------------+------------+-----------+--------------
+ alice_user | Alice      | Anderson  | 123-456-7890
+ bob_user   | Bob        | Brown     | 234-567-8901
+(2 rows)
+
+postgres=# SELECT a.author_name, b.title, b.publication_year
+FROM authors a
+INNER JOIN books b ON a.author_id = b.author_id
+ORDER BY a.author_name, b.publication_year;
+    author_name     |                  title                  | publication_year 
+--------------------+-----------------------------------------+------------------
+ George R.R. Martin | A Game of Thrones                       |             1996
+ George R.R. Martin | A Clash of Kings                        |             1998
+ J.K. Rowling       | Harry Potter and the Sorcerer's Stone   |             1997
+ J.K. Rowling       | Harry Potter and the Chamber of Secrets |             1998
+(4 rows)
+
+...skipping...
+    author_name     |                  title                  | publication_year 
+--------------------+-----------------------------------------+------------------
+ George R.R. Martin | A Game of Thrones                       |             1996
+ George R.R. Martin | A Clash of Kings                        |             1998
+ J.K. Rowling       | Harry Potter and the Sorcerer's Stone   |             1997
+ J.K. Rowling       | Harry Potter and the Chamber of Secrets |             1998
+(4 rows)
+
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+...skipping...
+    author_name     |                  title                  | publication_year 
+--------------------+-----------------------------------------+------------------
+ George R.R. Martin | A Game of Thrones                       |             1996
+ George R.R. Martin | A Clash of Kings                        |             1998
+ J.K. Rowling       | Harry Potter and the Sorcerer's Stone   |             1997
+ J.K. Rowling       | Harry Potter and the Chamber of Secrets |             1998
+(4 rows)
+
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+set mark: ...skipping...
+    author_name     |                  title                  | publication_year 
+--------------------+-----------------------------------------+------------------
+ George R.R. Martin | A Game of Thrones                       |             1996
+ George R.R. Martin | A Clash of Kings                        |             1998
+ J.K. Rowling       | Harry Potter and the Sorcerer's Stone   |             1997
+ J.K. Rowling       | Harry Potter and the Chamber of Secrets |             1998
+(4 rows)
+
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+...skipping...
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+    author_name     |                  title                  | publication_year 
+--------------------+-----------------------------------------+------------------
+ George R.R. Martin | A Game of Thrones                       |             1996
+ George R.R. Martin | A Clash of Kings                        |             1998
+ J.K. Rowling       | Harry Potter and the Sorcerer's Stone   |             1997
+ J.K. Rowling       | Harry Potter and the Chamber of Secrets |             1998
+(4 rows)
