@@ -1,0 +1,550 @@
+Last login: Wed Oct 15 14:08:41 on ttys000
+almazbekrysbekov@MacBook-Air-Almazbek ~ %  psql -h localhost -p 5432 -U almazbekrysbekov -d postgres
+
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# SELECT * FROM accounts;
+ account_id |  owner  | balance 
+------------+---------+---------
+          3 | Charlie |   50.00
+          2 | Bob     |  900.00
+          1 | Alice   |  606.00
+(3 rows)
+
+postgres=# BEGIN;
+BEGIN
+postgres=*# UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+UPDATE 1
+postgres=*# UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+UPDATE 1
+postgres=*# COMMIT;
+COMMIT
+postgres=# SELECT * FROM accounts;
+ account_id |  owner  | balance 
+------------+---------+---------
+          3 | Charlie |   50.00
+          1 | Alice   |  506.00
+          2 | Bob     | 1000.00
+(3 rows)
+
+postgres=# BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+BEGIN
+UPDATE 1
+UPDATE 1
+postgres=*# ROLLBACK;
+ROLLBACK
+postgres=# SELECT * FROM accounts;
+ account_id |  owner  | balance 
+------------+---------+---------
+          3 | Charlie |   50.00
+          1 | Alice   |  506.00
+          2 | Bob     | 1000.00
+(3 rows)
+
+postgres=# BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+BEGIN
+UPDATE 1
+UPDATE 1
+postgres=*# SELECT * FROM accounts;
+ account_id |  owner  | balance 
+------------+---------+---------
+          3 | Charlie |   50.00
+          1 | Alice   |  406.00
+          2 | Bob     | 1100.00
+(3 rows)
+
+postgres=*# ROLLBACK;
+ROLLBACK
+postgres=# BEGIN;
+UPDATE accounts SET balance = balance - 500 WHERE account_id = 1;
+UPDATE accounts SET balance = balance + 500 WHERE account_id = 2;
+BEGIN
+UPDATE 1
+UPDATE 1
+postgres=*# COMMIT;
+COMMIT
+postgres=# SELECT * FROM accounts;
+ account_id |  owner  | balance 
+------------+---------+---------
+          3 | Charlie |   50.00
+          1 | Alice   |    6.00
+          2 | Bob     | 1500.00
+(3 rows)
+
+postgres=# BEGIN;
+INSERT INTO orders (customer_id, total) VALUES (1, 250.00);
+BEGIN
+INSERT 0 1
+postgres=*# INSERT INTO order_items (order_id, product_id, quantity) VALUES (1, 101, 2);
+ERROR:  null value in column "item_price" of relation "order_items" violates not-null constraint
+DETAIL:  Failing row contains (4, 1, 101, 2, null).
+postgres=!# COMMIT;
+ROLLBACK
+postgres=# \d orders;
+                                            Table "public.orders"
+   Column    |            Type             | Collation | Nullable |                 Default                  
+-------------+-----------------------------+-----------+----------+------------------------------------------
+ order_id    | integer                     |           | not null | nextval('orders_order_id_seq'::regclass)
+ customer_id | integer                     |           |          | 
+ total       | numeric(12,2)               |           | not null | 0
+ created_at  | timestamp without time zone |           |          | now()
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (order_id)
+Foreign-key constraints:
+    "orders_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+
+(END)...skipping...
+                                            Table "public.orders"
+   Column    |            Type             | Collation | Nullable |                 Default                  
+-------------+-----------------------------+-----------+----------+------------------------------------------
+ order_id    | integer                     |           | not null | nextval('orders_order_id_seq'::regclass)
+ customer_id | integer                     |           |          | 
+ total       | numeric(12,2)               |           | not null | 0
+ created_at  | timestamp without time zone |           |          | now()
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (order_id)
+Foreign-key constraints:
+    "orders_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+
+~
+~
+~
+~
+...skipping...
+                                            Table "public.orders"
+   Column    |            Type             | Collation | Nullable |                 Default                  
+-------------+-----------------------------+-----------+----------+------------------------------------------
+ order_id    | integer                     |           | not null | nextval('orders_order_id_seq'::regclass)
+ customer_id | integer                     |           |          | 
+ total       | numeric(12,2)               |           | not null | 0
+ created_at  | timestamp without time zone |           |          | now()
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (order_id)
+Foreign-key constraints:
+    "orders_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+
+~
+~
+~
+~
+postgres=# ALTER TABLE orders DROP CONSTRAINT orders_customers_fk_customer_id;
+ERROR:  constraint "orders_customers_fk_customer_id" of relation "orders" does not exist
+postgres=# ALTER TABLE orders
+postgres-# DROP CONSTRAINT orders_customers_fk_customer_id;
+ERROR:  constraint "orders_customers_fk_customer_id" of relation "orders" does not exist
+postgres=# ALTER TABLE orders DROP CONSTRAINT orders_customers_fk_customer_id;
+ERROR:  constraint "orders_customers_fk_customer_id" of relation "orders" does not exist
+postgres=# \d orders
+                                            Table "public.orders"
+   Column    |            Type             | Collation | Nullable |                 Default                  
+-------------+-----------------------------+-----------+----------+------------------------------------------
+ order_id    | integer                     |           | not null | nextval('orders_order_id_seq'::regclass)
+ customer_id | integer                     |           |          | 
+ total       | numeric(12,2)               |           | not null | 0
+ created_at  | timestamp without time zone |           |          | now()
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (order_id)
+Foreign-key constraints:
+    "orders_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+
+postgres=# SELECT conname
+FROM pg_constraint
+WHERE conrelid = 'orders'::regclass;
+         conname         
+-------------------------
+ orders_customer_id_fkey
+ orders_pkey
+(2 rows)
+
+postgres=# ALTER TABLE orders DROP CONSTRAINT orders_customer_id_fkey;
+ALTER TABLE
+postgres=# DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN SELECT conname FROM pg_constraint WHERE conrelid = 'orders'::regclass LOOP
+        EXECUTE format('ALTER TABLE orders DROP CONSTRAINT %I', r.conname);
+    END LOOP;
+END $$;
+ERROR:  cannot drop constraint orders_pkey on table orders because other objects depend on it
+DETAIL:  constraint order_items_order_id_fkey on table order_items depends on index orders_pkey
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+CONTEXT:  SQL statement "ALTER TABLE orders DROP CONSTRAINT orders_pkey"
+PL/pgSQL function inline_code_block line 6 at EXECUTE
+postgres=# ALTER TABLE orders DROP CONSTRAINT orders_customers_fk_customer_id;
+ERROR:  constraint "orders_customers_fk_customer_id" of relation "orders" does not exist
+postgres=# BEGIN;
+INSERT INTO customers (name, email) VALUES ('John Doe', 'john@email.com');
+INSERT INTO orders (customer_id, total) VALUES (LASTVAL(), 100.00);
+COMMIT;
+BEGIN
+INSERT 0 1
+INSERT 0 1
+COMMIT
+postgres=# BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;
+SELECT * FROM accounts WHERE balance > 1000;
+BEGIN
+ account_id | owner | balance 
+------------+-------+---------
+          2 | Bob   | 1500.00
+(1 row)
+
+postgres=*# BEGIN;
+UPDATE accounts SET balance = 12312313 WHERE account_id = 6;
+COMMIT;
+WARNING:  there is already a transaction in progress
+BEGIN
+UPDATE 0
+COMMIT
+postgres=# SELECT * FROM accounts WHERE balance > 1000;
+COMMIT;
+ account_id | owner | balance 
+------------+-------+---------
+          2 | Bob   | 1500.00
+(1 row)
+
+WARNING:  there is no transaction in progress
+COMMIT
+postgres=# BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM accounts WHERE balance > 1000;
+BEGIN
+ account_id | owner | balance 
+------------+-------+---------
+          2 | Bob   | 1500.00
+(1 row)
+
+postgres=*# BEGIN;
+UPDATE accounts SET balance = 1000 WHERE account_id = 6;
+COMMIT;
+WARNING:  there is already a transaction in progress
+BEGIN
+UPDATE 0
+COMMIT
+postgres=# SELECT * FROM accounts WHERE balance > 1000;
+COMMIT;
+ account_id | owner | balance 
+------------+-------+---------
+          2 | Bob   | 1500.00
+(1 row)
+
+WARNING:  there is no transaction in progress
+COMMIT
+postgres=# BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT * FROM accounts;
+UPDATE accounts SET balance = balance * 1.05; -- 5% процентов
+COMMIT;
+BEGIN
+ account_id |  owner  | balance 
+------------+---------+---------
+          3 | Charlie |   50.00
+          1 | Alice   |    6.00
+          2 | Bob     | 1500.00
+(3 rows)
+
+UPDATE 3
+COMMIT
+postgres=# 
+postgres=# BEGIN;
+INSERT INTO customers (name, email) VALUES ('Alice', 'alice@email.com');
+SAVEPOINT after_customer_insert;
+BEGIN
+INSERT 0 1
+SAVEPOINT
+postgres=*# INSERT INTO orders (customer_id, total) VALUES (1, 500.00);
+INSERT INTO orders (customer_id, total) VALUES (81123, 1923918);
+INSERT 0 1
+INSERT 0 1
+postgres=*# ROLLBACK TO SAVEPOINT after_customer_insert;
+ROLLBACK
+postgres=*# INSERT INTO orders (customer_id, total) VALUES (1, 300.00);
+INSERT 0 1
+postgres=*# COMMIT;
+COMMIT
+postgres=# BEGIN;
+INSERT INTO products (name, price) VALUES ('Laptop', 999.99);
+SAVEPOINT sp1;
+BEGIN
+INSERT 0 1
+SAVEPOINT
+postgres=*# INSERT INTO products (name, price) VALUES ('Mouse', 25.99);
+SAVEPOINT sp2;
+INSERT 0 1
+SAVEPOINT
+postgres=*# INSERT INTO products (name, price) VALUES ('Invalid Product', -50.00);
+ERROR:  new row for relation "products" violates check constraint "products_price_check"
+DETAIL:  Failing row contains (8, Invalid Product, -50.00).
+postgres=!# CONSTRAINT products_price_check CHECK (price > 0)
+postgres-!# INSERT INTO products (name, price) VALUES ('Invalid Product', -50.00);
+ERROR:  syntax error at or near "CONSTRAINT"
+LINE 1: CONSTRAINT products_price_check CHECK (price > 0)
+        ^
+postgres=!# INSERT INTO products (name, price) VALUES ('Valid Product', 50.00);
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+postgres=!# ROLLBACK TO SAVEPOINT sp2;
+ROLLBACK
+postgres=*# INSERT INTO products (name, price) VALUES ('Keyboard', 79.99);
+COMMIT;
+INSERT 0 1
+COMMIT
+postgres=# \d products
+                                     Table "public.products"
+   Column   |     Type      | Collation | Nullable |                   Default                    
+------------+---------------+-----------+----------+----------------------------------------------
+ product_id | integer       |           | not null | nextval('products_product_id_seq'::regclass)
+ name       | text          |           | not null | 
+ price      | numeric(10,2) |           | not null | 
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (product_id)
+Check constraints:
+    "products_price_check" CHECK (price >= 0::numeric)
+Referenced by:
+    TABLE "inventory" CONSTRAINT "inventory_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+    TABLE "order_items" CONSTRAINT "order_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+
+...skipping...
+                                     Table "public.products"
+   Column   |     Type      | Collation | Nullable |                   Default                    
+------------+---------------+-----------+----------+----------------------------------------------
+ product_id | integer       |           | not null | nextval('products_product_id_seq'::regclass)
+ name       | text          |           | not null | 
+ price      | numeric(10,2) |           | not null | 
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (product_id)
+Check constraints:
+    "products_price_check" CHECK (price >= 0::numeric)
+Referenced by:
+    TABLE "inventory" CONSTRAINT "inventory_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+    TABLE "order_items" CONSTRAINT "order_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+
+~
+~
+~
+~
+...skipping...
+                                     Table "public.products"
+   Column   |     Type      | Collation | Nullable |                   Default                    
+------------+---------------+-----------+----------+----------------------------------------------
+ product_id | integer       |           | not null | nextval('products_product_id_seq'::regclass)
+ name       | text          |           | not null | 
+ price      | numeric(10,2) |           | not null | 
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (product_id)
+Check constraints:
+    "products_price_check" CHECK (price >= 0::numeric)
+Referenced by:
+    TABLE "inventory" CONSTRAINT "inventory_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+    TABLE "order_items" CONSTRAINT "order_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+
+~
+~
+~
+~
+...skipping...
+~
+~
+~
+~
+                                     Table "public.products"
+   Column   |     Type      | Collation | Nullable |                   Default                    
+------------+---------------+-----------+----------+----------------------------------------------
+ product_id | integer       |           | not null | nextval('products_product_id_seq'::regclass)
+ name       | text          |           | not null | 
+ price      | numeric(10,2) |           | not null | 
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (product_id)
+Check constraints:
+    "products_price_check" CHECK (price >= 0::numeric)
+Referenced by:
+    TABLE "inventory" CONSTRAINT "inventory_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+    TABLE "order_items" CONSTRAINT "order_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+Last login: Thu Oct 16 10:59:04 on ttys000
+almazbekrysbekov@MacBook-Air-Almazbek ~ %  psql -h localhost -p 5432 -U almazbekrysbekov -d postgres
+
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# BEGIN;
+BEGIN
+postgres=*# INSERT INTO products (name, price) VALUES ('Laptop', 999.99);
+SAVEPOINT sp1;
+
+INSERT INTO products (name, price) VALUES ('Mouse', 25.99);
+SAVEPOINT sp2;
+INSERT 0 1
+SAVEPOINT
+INSERT 0 1
+SAVEPOINT
+postgres=*# INSERT INTO products (name, price) VALUES ('Invalid Product', -50.00);
+ERROR:  new row for relation "products" violates check constraint "products_price_check"
+DETAIL:  Failing row contains (12, Invalid Product, -50.00).
+postgres=!# ROLLBACK TO SAVEPOINT sp2;
+ROLLBACK
+postgres=*# INSERT INTO products (name, price) VALUES ('Keyboard', 79.99);
+INSERT 0 1
+postgres=*# COMMIT;
+COMMIT
+postgres=# SELECT * FROM products;
+ product_id |      name      | price  
+------------+----------------+--------
+          1 | Laptop         | 999.99
+          2 | Mouse          |  25.99
+          3 | Keyboard       |  79.99
+          5 | ValidAccessory |  19.99
+          6 | Laptop         | 999.99
+          7 | Mouse          |  25.99
+          9 | Keyboard       |  79.99
+         10 | Laptop         | 999.99
+         11 | Mouse          |  25.99
+         13 | Keyboard       |  79.99
+(10 rows)
+
+postgres=# BEGIN;
+INSERT INTO logs (message) VALUES ('Starting process');
+SAVEPOINT process_start;
+BEGIN
+INSERT 0 1
+SAVEPOINT
+postgres=*# INSERT INTO logs (message) VALUES ('Process completed');
+RELEASE SAVEPOINT process_start;
+COMMIT;
+INSERT 0 1
+RELEASE
+COMMIT
+postgres=# BEGIN;
+BEGIN
+postgres=*# DO $$
+postgres$*# DECLARE
+postgres$*# current_balance DECIMAL;
+postgres$*# BEGIN
+    SELECT balance INTO current_balance FROM accounts WHERE account_id = 1;
+    IF current_balance < 100 THEN
+        RAISE EXCEPTION 'Insufficient funds in account 1';
+    END IF;
+postgres$*#     SELECT balance INTO current_balance FROM accounts WHERE account_id = 1;
+postgres$*# END $$;
+ERROR:  Insufficient funds in account 1
+CONTEXT:  PL/pgSQL function inline_code_block line 8 at RAISE
+postgres=!# BEGIN;
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+postgres=!# BEGIN;
+DO $$
+DECLARE
+    current_balance DECIMAL;
+BEGIN
+    SELECT balance INTO current_balance FROM accounts WHERE account_id = 1;
+    IF current_balance < 100 THEN
+        RAISE EXCEPTION 'Insufficient funds in account 1';
+    END IF;
+    UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+    UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Transaction failed: Insufficient funds';
+        ROLLBACK;
+END $$;
+COMMIT;
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ROLLBACK
+postgres=# BEGIN;
+BEGIN
+postgres=*# DO $$
+postgres$*# DECLARE
+    current_balance DECIMAL;
+BEGIN
+    SELECT balance INTO current_balance FROM accounts WHERE account_id = 1;
+    IF current_balance < 100 THEN
+        RAISE EXCEPTION 'Insufficient funds in account 1';
+    END IF;
+    UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+    UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Transaction failed: Insufficient funds';
+        ROLLBACK;
+postgres$*# END $$;
+NOTICE:  Transaction failed: Insufficient funds
+ERROR:  invalid transaction termination
+CONTEXT:  PL/pgSQL function inline_code_block line 15 at ROLLBACK
+postgres=!# COMMIT;
+ROLLBACK
+postgres=# BEGIN;
+INSERT INTO audit_log (action, timestamp) VALUES ('user_creation', NOW());
+INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com');
+INSERT INTO user_preferences (user_id, theme) VALUES (currval('users_id_seq'), 'dark');
+COMMIT;
+BEGIN
+ERROR:  column "timestamp" of relation "audit_log" does not exist
+LINE 1: INSERT INTO audit_log (action, timestamp) VALUES ('user_crea...
+                                       ^
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ROLLBACK
+postgres=# INSERT INTO audit_log (action, timestamp) VALUES ('user_creation', NOW());
+INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com');
+ERROR:  column "timestamp" of relation "audit_log" does not exist
+LINE 1: INSERT INTO audit_log (action, timestamp) VALUES ('user_crea...
+                                       ^
+INSERT 0 1
+postgres=# SELECT 
+    blocked_locks.pid AS blocked_pid,
+    blocked_activity.usename AS blocked_user,
+    blocking_locks.pid AS blocking_pid,
+    blocking_activity.usename AS blocking_user,
+    blocked_activity.query AS blocked_statement
+FROM pg_catalog.pg_locks blocked_locks
+JOIN pg_catalog.pg_stat_activity blocked_activity 
+    ON blocked_activity.pid = blocked_locks.pid
+JOIN pg_catalog.pg_locks blocking_locks 
+    ON blocking_locks.locktype = blocked_locks.locktype
+JOIN pg_catalog.pg_stat_activity blocking_activity
+    ON blocking_activity.pid = blocking_locks.pid
+WHERE NOT blocked_locks.granted;
+ blocked_pid | blocked_user | blocking_pid | blocking_user | blocked_statement 
+-------------+--------------+--------------+---------------+-------------------
+(0 rows)
+
+postgres=# BEGIN;
+INSERT INTO orders (customer_id, total) VALUES (1, 1000.00);
+SAVEPOINT before_items;
+
+INSERT INTO order_items (order_id, product_id, quantity) VALUES (currval('orders_order_id_seq'), 101, 2);
+INSERT INTO order_items (order_id, product_id, quantity) VALUES (currval('orders_order_id_seq'), 102, 1);
+COMMIT;
+BEGIN
+INSERT 0 1
+SAVEPOINT
+ERROR:  null value in column "item_price" of relation "order_items" violates not-null constraint
+DETAIL:  Failing row contains (5, 8, 101, 2, null).
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ROLLBACK
+postgres=# BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;
+SELECT
+    COUNT(*) AS total_accounts,
+    SUM(balance) AS total_balance,
+    AVG(balance) AS avg_balance
+FROM accounts;
+COMMIT;
+BEGIN
+ total_accounts | total_balance |     avg_balance      
+----------------+---------------+----------------------
+              3 |       1633.80 | 544.6000000000000000
+(1 row)
+
+COMMIT
+postgres=# /q
+postgres-# \q
+almazbekrysbekov@MacBook-Air-Almazbek ~ % 
