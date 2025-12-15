@@ -5,9 +5,9 @@
 
 This project implements a comprehensive database system for an **Online Cinema Ticket Booking System**. The system allows users to browse movies, view showtimes, book tickets, and manage their reservations through a PostgreSQL database backend.
 
-### Team Information
+### Information
 
-- **Course**: Database Systems
+- **Course**: Database
 - **Institution**: AUCA
 - **Semester**: Fall 2025
 - **Project Type**: Final Project
@@ -18,7 +18,7 @@ This project implements a comprehensive database system for an **Online Cinema T
 
 1. [Project Structure](#project-structure)
 2. [Database Schema](#database-schema)
-3. [ER Diagram](#er-diagram)
+3. [Cinema Booking System-2025-12-14-144654.png](#er-diagram)
 4. [Installation & Setup](#installation--setup)
 5. [Database Schema Implementation](#database-schema-implementation)
 6. [Sample Data](#sample-data)
@@ -37,7 +37,7 @@ This project implements a comprehensive database system for an **Online Cinema T
 ```
 Final_Project_Cinema_Booking/
 │
-├── ER_DIAGRAM.md                 # Entity Relationship Diagram documentation
+├── Cinema Booking System-2025-12-14-144654.png                 # Entity Relationship Diagram documentation
 ├── 01_database_schema.sql        # Database schema DDL (tables, constraints, triggers)
 ├── 02_sample_data.sql            # Sample data insertion scripts
 ├── 03_basic_queries.sql          # Basic SQL queries
@@ -133,11 +133,6 @@ Stores individual ticket information
 
 ---
 
-## ER Diagram
-
-See [ER_DIAGRAM.md](ER_DIAGRAM.md) for detailed Entity Relationship Diagram with visual representation and relationship descriptions.
-
----
 
 ## Installation & Setup
 
@@ -366,41 +361,31 @@ chmod +x backup_script.sh restore_script.sh
 
 ### Core Features
 
-1. ✅ User account management
-2. ✅ Movie catalog management
-3. ✅ Cinema hall and seat management
-4. ✅ Showtime scheduling
-5. ✅ Ticket booking system
-6. ✅ Seat availability checking
-7. ✅ Booking status management
-8. ✅ Data integrity enforcement
+1.  User account management
+2.  Movie catalog management
+3.  Cinema hall and seat management
+4.  Showtime scheduling
+5.  Ticket booking system
+6.  Seat availability checking
+7.  Booking status management
+8.  Data integrity enforcement
 
-### Advanced Features
-
-1. ✅ Prevents double booking with triggers
-2. ✅ Automatic timestamp updates
-3. ✅ Comprehensive views for reporting
-4. ✅ Full text search capability
-5. ✅ Transaction support for atomic operations
-6. ✅ Performance optimization with indexes
-
----
 
 ## Database Normalization
 
 The database is normalized to **Third Normal Form (3NF)**:
 
 ### First Normal Form (1NF)
-- ✅ All attributes have atomic values
-- ✅ No repeating groups
+-  All attributes have atomic values
+-  No repeating groups
 
 ### Second Normal Form (2NF)
-- ✅ All tables are in 1NF
-- ✅ All non-key attributes fully depend on primary key
+-  All tables are in 1NF
+-  All non-key attributes fully depend on primary key
 
 ### Third Normal Form (3NF)
-- ✅ All tables are in 2NF
-- ✅ No transitive dependencies
+- All tables are in 2NF
+- No transitive dependencies
 
 ### Normalization Benefits
 
@@ -509,69 +494,31 @@ ORDER BY b.created_at DESC;
 
 ---
 
-## Future Enhancements
-
-Potential improvements and extensions:
-
-1. **Payment Integration**: Add payment transactions table
-2. **Loyalty Program**: Points and rewards system
-3. **Email Notifications**: Booking confirmations
-4. **Refund Management**: Cancellation and refund tracking
-5. **Movie Ratings**: User reviews and ratings
-6. **Recommendation System**: Movie recommendations based on history
-7. **Multi-language Support**: Internationalization
-8. **Audit Logging**: Track all changes to bookings
-9. **Seat Reservation**: Temporary holds before payment
-10. **Mobile App Integration**: API endpoints for mobile applications
-
----
-
 ## Project Deliverables Summary
 
-✅ **ER Diagram**: Complete entity relationship diagram with documentation  
-✅ **Database Schema**: Normalized PostgreSQL schema implementation  
-✅ **SQL Queries**: Comprehensive basic and advanced queries  
-✅ **Transactions**: ACID property demonstrations  
-✅ **Indexing**: Performance optimization strategy  
-✅ **Backup & Restore**: Complete backup and recovery strategy  
-✅ **Documentation**: Detailed README and inline documentation  
+ **ER Diagram**: Complete entity relationship diagram with documentation  
+ **Database Schema**: Normalized PostgreSQL schema implementation  
+ **SQL Queries**: Comprehensive basic and advanced queries  
+ **Transactions**: ACID property demonstrations  
+ **Indexing**: Performance optimization strategy  
+ **Backup & Restore**: Complete backup and recovery strategy  
+ **Documentation**: Detailed README and inline documentation  
 
 ---
 
 ## Author Information
 
-- **Student Name**: [Your Name]
-- **Course**: Database Systems
+- **Student Name**: Rysbekov Almazbek
+- **Course**: Database 
 - **Institution**: AUCA
 - **Year**: 2025
 
----
-
-## License
-
-This project is created for educational purposes as part of the Database Systems course at AUCA.
-
----
-
-## Acknowledgments
-
-- PostgreSQL Documentation
-- Database Design Best Practices
-- Course materials and lectures
-
----
 
 ## Repository Information
 
 This project is available on GitHub/GitLab:
-- Repository URL: [Add your repository URL here]
+- Repository URL: https://github.com/immwav/Database_labs
 
----
-
-## Contact
-
-For questions or issues regarding this project, please contact:
-- Email: [Your Email]
 
 ---
 
